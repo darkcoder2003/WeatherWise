@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>WeatherWise</title>
+    <style>
+        .watermark-bg {
+            position: relative;
+            z-index: 1;
+        }
+
+        .watermark-bg::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: url('istock.jpg');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        body {
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: url('istock.jpg');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+    </style>
+    <style>
+        @keyframes slideIn {
+            0% {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .sliding-container {
+            animation: slideIn 1s ease-out;
+        }
+
+        .sliding-container:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+    </style>
+
+    <style>
+        .recent-searches {
+            margin-top: 20px;
+        }
+
+        #recentSearchesList {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 0;
+        }
+
+        #recentSearchesList li {
+            cursor: pointer;
+            padding: 5px 10px;
+            margin: 5px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            transition: background-color 0.2s ease;
+        }
+
+        #recentSearchesList li:hover {
+            background-color: #e9ecef;
+        }
+
+        /* New styles for button and container */
+        #recentSearchesBtn {
+            display: block;
+            margin: 0 auto;
+        }
+
+        #recentSearchesContainer {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        #submit {
+            color: #000;
+            background-color: #FFB347;  /* Light orange */
+            border-color: #FFB347;
+            transition: all 0.3s ease;
+        }
+
+        #submit:hover {
+            background-color: #FFA500;  /* Slightly darker orange on hover */
+            border-color: #FFA500;
+        }
+
+        #submit:active {
+            background-color: #FF8C00 !important;  /* Dark orange when clicked */
+            border-color: #FF8C00 !important;
+        }
+
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light watermark-bg">
+        <a class="navbar-brand" href="#">
+            <img src="images.png" width="30" height="30" class="d-inline-block align-top" alt="Weather App Logo">
+            WeatherWise
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About this app</a>
+                </li>
+                <!-- <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                How to use?
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Delhi</a>
+                <a class="dropdown-item" href="#">Seattle</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Bangalore</a>
+              </div>
+              
+            </li> -->
+                <li class="nav-item">
+                    <a class="nav-link">Usage Guide</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input id="city" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-light-orange my-2 my-sm-0" type="submit" id="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="container sliding-container">
+        <h1 class="my-4 text-center">Weather for <span id="cityname"></span></h1>
+        <div class="card-deck mb-3 text-center">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Condition</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>Temperature : <span id="temp"></span><span>&#8457;</span></li>
+                        <li>Wind Speed : <span id="wind_speed"></span>km/hr</li>
+                        <li>Condition : <span id="condition"></span></li>
+                    </ul>
+                    <!-- <button type="button" class="btn btn-lg btn-block btn-outline-primary">Sign up for free</button> -->
+                </div>
+            </div>
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Atmosphere</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>Humidity : <span id="humidity"></span><span>&#37;</span></li>
+                        <li>Visibility : <span id="visibility"></span>km</li>
+                    </ul>
+                    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">Get started</button> -->
+                </div>
+            </div>
+            <div class="card mb-4 shadow-sm sliding-container">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Astronomy</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>Sunrise : <span id="sunrise"></span></li>
+                        <li>Sunset : <span id="sunset"></span></li>
+                    </ul>
+                    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">Contact us</button> -->
+                </div>
+            </div>
+            <div class="container mt-4 text-center">
+                <button id="recentSearchesBtn" class="btn btn-primary">Recent Searches</button>
+                <div id="recentSearchesContainer" class="mt-3" style="display: none;">
+                  <h3 class="text-center">Recent Searches</h3>
+                  <ul id="recentSearchesList" class="list-unstyled"></ul>
+                </div>
+              </div>
+        </div>
+
+        <div class="container mt-5">
+            <h2 class="text-center mb-4">Weekly Weather Forecast</h2>
+            <table class="table table-striped table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Day</th>
+                        <th scope="col">Highest Temperature</th>
+                        <th scope="col">Lowest Temperature</th>
+                        <th scope="col">Condition</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row"><span id="day1"></span></th>
+                        <td><span id="high1"></span><span>&#8457;</span></td>
+                        <td><span id="low1"></span><span>&#8457;</span></td>
+                        <td><span id="condition1"></span></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><span id="day2"></span></th>
+                        <td><span id="high2"></span><span>&#8457;</span></td>
+                        <td><span id="low2"></span><span>&#8457;</span></td>
+                        <td><span id="condition2"></span></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><span id="day3"></span></th>
+                        <td><span id="high3"></span><span>&#8457;</span></td>
+                        <td><span id="low3"></span><span>&#8457;</span></td>
+                        <td><span id="condition3"></span></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><span id="day4"></span></th>
+                        <td><span id="high4"></span><span>&#8457;</span></td>
+                        <td><span id="low4"></span><span>&#8457;</span></td>
+                        <td><span id="condition4"></span></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><span id="day5"></span></th>
+                        <td><span id="high5"></span><span>&#8457;</span></td>
+                        <td><span id="low5"></span><span>&#8457;</span></td>
+                        <td><span id="condition5"></span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <footer class="pt-4 my-md-5 pt-md-5 border-top">
+            <div class="row">
+                <div class="col-12 col-md">
+                    <img class="mb-2" src="/docs/4.3/assets/brand/bootstrap-solid.svg" alt="" width="24" height="24">
+                    <small class="d-block mb-3 text-muted">© 2017-2019</small>
+                </div>
+                <div class="col-6 col-md">
+                    <h5>Features</h5>
+                    <ul class="list-unstyled text-small">
+                        <li><a class="text-muted" href="#">Cool stuff</a></li>
+                        <li><a class="text-muted" href="#">Random feature</a></li>
+                        <li><a class="text-muted" href="#">Team feature</a></li>
+                        <li><a class="text-muted" href="#">Stuff for developers</a></li>
+                        <li><a class="text-muted" href="#">Another one</a></li>
+                        <li><a class="text-muted" href="#">Last time</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled text-small">
+                        <li><a class="text-muted" href="#">Resource</a></li>
+                        <li><a class="text-muted" href="#">Resource name</a></li>
+                        <li><a class="text-muted" href="#">Another resource</a></li>
+                        <li><a class="text-muted" href="#">Final resource</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md">
+                    <h5>About</h5>
+                    <ul class="list-unstyled text-small">
+                        <li><a class="text-muted" href="#">Team</a></li>
+                        <li><a class="text-muted" href="#">Locations</a></li>
+                        <li><a class="text-muted" href="#">Privacy</a></li>
+                        <li><a class="text-muted" href="#">Terms</a></li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+    <script src="weather.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const recentSearchesBtn = document.getElementById('recentSearchesBtn');
+          const recentSearchesContainer = document.getElementById('recentSearchesContainer');
+      
+          recentSearchesBtn.addEventListener('click', function() {
+            if (recentSearchesContainer.style.display === 'none') {
+              recentSearchesContainer.style.display = 'block';
+            } else {
+              recentSearchesContainer.style.display = 'none';
+            }
+          });
+        });
+      </script>
+</body>
+
+</html>
